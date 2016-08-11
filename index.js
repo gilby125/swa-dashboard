@@ -129,9 +129,9 @@ const fetch = () => {
       const lowestOutboundFare = Math.min(...fares.outbound)
       const lowestReturnFare = Math.min(...fares.return)
 
-      // Remove higher fares to free memory
-      fares.outbound = [lowestOutboundFare]
-      fares.return = [lowestReturnFare]
+      // Clear previous fares
+      fares.outbound = []
+      fares.return = []
 
       // Get difference from previous fares
       const outboundFareDiff = prevLowestOutboundFare - lowestOutboundFare
