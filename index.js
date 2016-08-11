@@ -110,7 +110,7 @@ const fetch = () => {
       returnDateString: returnDateString,
       returnTimeOfDay: "ANYTIME",
       adultPassengerCount: adultPassengerCount,
-      seniorPassengerCount: "0",
+      seniorPassengerCount: 0,
       fareType: "DOLLARS",
     })
     .find("#faresOutbound .product_price")
@@ -160,7 +160,7 @@ const fetch = () => {
       prevLowestOutboundFare = lowestOutboundFare
       prevLowestReturnFare = lowestReturnFare
 
-      // Do some Twilio magic (SMS alerts for awesoem deals)
+      // Do some Twilio magic (SMS alerts for awesome deals)
       if (dealPriceThreshold && (lowestOutboundFare <= dealPriceThreshold || lowestReturnFare <= dealPriceThreshold)) {
         const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return).`
 
@@ -173,7 +173,7 @@ const fetch = () => {
       }
 
       console.log(
-        `\nLowest fair for outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")},\nwhile the cheapest return flight is \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}.`
+        `\nLowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")},\nwhile the cheapest return flight is \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}.`
       )
 
       setTimeout(fetch, interval * TIME_MIN)
@@ -181,6 +181,7 @@ const fetch = () => {
 }
 
 console.log(chalk.green("Starting…"))
+
 if (dealPriceThreshold) {
   console.log(chalk.yellow(`Watching for deals lower than \$${dealPriceThreshold}!`))
 
@@ -188,4 +189,5 @@ if (dealPriceThreshold) {
     console.log(chalk.yellow(`SMS deal alerts are enabled for ${process.env.TWILIO_PHONE_TO}!`))
   }
 }
+
 fetch()
