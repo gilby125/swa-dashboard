@@ -79,7 +79,7 @@ const sendTextMessage = (message) => {
       body: message
     }, function(err, data) {
       if (err) {
-        console.error(
+        console.log(
           chalk.red(`Error: failed to send SMS to ${process.env.TWILIO_PHONE_TO} from ${process.env.TWILIO_PHONE_FROM}`)
         )
       } else {
