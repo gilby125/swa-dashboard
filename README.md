@@ -21,5 +21,17 @@ swa \
   --leave-date '11/01/2016' \
   --return-date '11/08/2016' \
   --passengers 2 \
+  --deal-price-threshold 50 # In dollars
   --interval 5 # In minutes
+```
+
+### Twilio integration
+If you have a Twilio account set up, you can set the following environment vars
+to set up SMS deal alerts, which using a deal price threshold.
+
+```bash
+export TWILIO_ACCOUNT_SID=""
+export TWILIO_AUTH_TOKEN=""
+export TWILIO_PHONE_FROM=""
+export TWILIO_PHONE_TO=""
 ```
