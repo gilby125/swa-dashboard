@@ -32,7 +32,7 @@ swa \
 ### Twilio integration
 If you have a Twilio account and you've set up a deal price threshold, you can
 set the following environment vars to set up SMS deal alerts. _Just be warned:
-as long as the deal threshold is hit, you're going to get SMS messages at the
+as long as the deal threshold is met, you're going to get SMS messages at the
 rate of the interval you defined. So wake up and book those tickets!_
 
 ```bash
