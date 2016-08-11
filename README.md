@@ -11,8 +11,12 @@ npm link
 
 ## Usage
 It will scrape Southwest's prices every `n` minutes (`n` = whatever interval you
-define via the `--interval` param) and compare the results, letting you know the
+define via the `--interval` flag) and compare the results, letting you know the
 difference in price since the last interval. The default interval is 30 mins.
+
+You may optionally set a `--deal-price-threshold` flag, which will alert you if
+the prices fall below the threshold you define. Other than `--interval`, all
+other flags are required. _I'm lazy, so there is no validation._
 
 ```bash
 swa \
