@@ -25,8 +25,8 @@ swa \
   --leave-date '11/01/2016' \
   --return-date '11/08/2016' \
   --passengers 2 \
-  --deal-price-threshold 50 # In dollars (optional)
-  --interval 5 # In minutes
+  --deal-price-threshold 50 \ # In dollars (optional)
+  --interval 5 # In minutes (optional)
 ```
 
 ### Twilio integration
