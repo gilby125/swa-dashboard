@@ -139,20 +139,22 @@ const fetch = () => {
       var outboundFareDiffString = ""
       var returnFareDiffString = ""
 
-      if (outboundFareDiff !== NaN && returnFareDiff !== NaN) {
-        switch (true) {
-          case outboundFareDiff > 0:
-            outboundFareDiffString = chalk.red(`(up \$${outboundFareDiff})`)
-          case outboundFareDiff < 0:
-            outboundFareDiffString = chalk.green(`(down \$${outboundFareDiff})`)
-          case outboundFareDiff === 0:
-            outboundFareDiffString = chalk.blue(`(no change)`)
-          case returnFareDiff > 0:
-            returnFareDiffString = chalk.red(`(up \$${returnFareDiff})`)
-          case returnFareDiff < 0:
-            returnFareDiffString = chalk.green(`(down \$${returnFareDiff})`)
-          case returnFareDiff === 0:
-            returnFareDiffString = chalk.blue(`(no change)`)
+      if (!isNaN(outboundFareDiff) && !isNaN(returnFareDiff)) {
+
+        if (outboundFareDiff > 0) {
+          outboundFareDiffString = chalk.red(`(up \$${Math.abs(outboundFareDiff)})`)
+        } else if (outboundFareDiff < 0) {
+          outboundFareDiffString = chalk.green(`(down \$${Math.abs(outboundFareDiff)})`)
+        } else if (outboundFareDiff === 0) {
+          outboundFareDiffString = chalk.blue(`(no change)`)
+        }
+
+        if (returnFareDiff > 0) {
+          returnFareDiffString = chalk.red(`(up \$${Math.abs(returnFareDiff)})`)
+        } else if (returnFareDiff < 0) {
+          returnFareDiffString = chalk.green(`(down \$${Math.abs(returnFareDiff)})`)
+        } else if (returnFareDiff === 0) {
+          returnFareDiffString = chalk.blue(`(no change)`)
         }
       }
 
