@@ -4,7 +4,7 @@
 const osmosis = require("osmosis")
 const chalk = require("chalk")
 const rainbow = require("chalk-rainbow")
-const twilio = require("twilio");
+const twilio = require("twilio")
 
 // Time constants
 const TIME_MS = 1
