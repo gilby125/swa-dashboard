@@ -142,17 +142,17 @@ const fetch = () => {
       if (!isNaN(outboundFareDiff) && !isNaN(returnFareDiff)) {
 
         if (outboundFareDiff > 0) {
-          outboundFareDiffString = chalk.red(`(up \$${Math.abs(outboundFareDiff)})`)
-        } else if (outboundFareDiff < 0) {
           outboundFareDiffString = chalk.green(`(down \$${Math.abs(outboundFareDiff)})`)
+        } else if (outboundFareDiff < 0) {
+          outboundFareDiffString = chalk.red(`(up \$${Math.abs(outboundFareDiff)})`)
         } else if (outboundFareDiff === 0) {
           outboundFareDiffString = chalk.blue(`(no change)`)
         }
 
         if (returnFareDiff > 0) {
-          returnFareDiffString = chalk.red(`(up \$${Math.abs(returnFareDiff)})`)
-        } else if (returnFareDiff < 0) {
           returnFareDiffString = chalk.green(`(down \$${Math.abs(returnFareDiff)})`)
+        } else if (returnFareDiff < 0) {
+          returnFareDiffString = chalk.red(`(up \$${Math.abs(returnFareDiff)})`)
         } else if (returnFareDiff === 0) {
           returnFareDiffString = chalk.blue(`(no change)`)
         }
