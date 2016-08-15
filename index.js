@@ -128,6 +128,7 @@ const fetch = () => {
     .done(() => {
       const lowestOutboundFare = Math.min(...fares.outbound)
       const lowestReturnFare = Math.min(...fares.return)
+      var shouldPrintFares = true
 
       // Clear previous fares
       fares.outbound = []
@@ -139,7 +140,13 @@ const fetch = () => {
       var outboundFareDiffString = ""
       var returnFareDiffString = ""
 
+      // Create a string to show the difference
       if (!isNaN(outboundFareDiff) && !isNaN(returnFareDiff)) {
+
+        // Usually this is because of a scraping error
+        if (!isFinite(outboundFareDiff) || !isFinite(returnFareDiff)) {
+          shouldPrintFares = false
+        }
 
         if (outboundFareDiff > 0) {
           outboundFareDiffString = chalk.green(`(down \$${Math.abs(outboundFareDiff)})`)
@@ -158,25 +165,28 @@ const fetch = () => {
         }
       }
 
-      // Store current fares for next time
-      prevLowestOutboundFare = lowestOutboundFare
-      prevLowestReturnFare = lowestReturnFare
+      if (shouldPrintFares) {
 
-      // Do some Twilio magic (SMS alerts for awesome deals)
-      if (dealPriceThreshold && (lowestOutboundFare <= dealPriceThreshold || lowestReturnFare <= dealPriceThreshold)) {
-        const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return).`
+        // Store current fares for next time
+        prevLowestOutboundFare = lowestOutboundFare
+        prevLowestReturnFare = lowestReturnFare
 
-        // Party time
-        console.log(rainbow(`\n${message}`))
+        // Do some Twilio magic (SMS alerts for awesome deals)
+        if (dealPriceThreshold && (lowestOutboundFare <= dealPriceThreshold || lowestReturnFare <= dealPriceThreshold)) {
+          const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return).`
 
-        if (isTwilioConfigured) {
-          sendTextMessage(message)
+          // Party time
+          console.log(rainbow(`\n${message}`))
+
+          if (isTwilioConfigured) {
+            sendTextMessage(message)
+          }
         }
-      }
 
-      console.log(
-        `\nLowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")},\nwhile the cheapest return flight is \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}.`
-      )
+        console.log(
+          `\nLowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")},\nwhile the cheapest return flight is \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}.`
+        )
+      }
 
       setTimeout(fetch, interval * TIME_MIN)
     })
