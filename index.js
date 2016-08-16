@@ -102,6 +102,7 @@ const sendTextMessage = (message) => {
 class Dashboard {
 
   constructor() {
+    this.markers = []
     this.widgets = {}
 
     // Configure blessed
@@ -268,7 +269,26 @@ class Dashboard {
    * Add waypoint marker to map
    */
   waypoint(data) {
-    this.widgets.map.addMarker(data)
+    this.markers.push(data)
+
+    if (this.blink) {
+      return
+    }
+
+    // Blink effect
+    var visible = true
+
+    this.blink = setInterval(() => {
+      if (visible) {
+        this.markers.forEach((m) => this.widgets.map.addMarker(m))
+      } else {
+        this.widgets.map.clearMarkers()
+      }
+
+      visible = !visible
+
+      this.render()
+    }, 1 * TIME_SEC)
   }
 
   /**
