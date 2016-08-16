@@ -226,7 +226,7 @@ class Dashboard {
    * @return {Void}
    */
   plot(prices) {
-    const now = format("hh:mm:ss", new Date())
+    const now = format("MM/dd/yy-hh:mm:ss", new Date())
 
     Object.assign(this.graphs.outbound, {
       x: [...this.graphs.outbound.x, now],
