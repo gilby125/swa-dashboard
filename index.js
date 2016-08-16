@@ -452,7 +452,7 @@ dashboard.settings([
   `Return date: ${returnDateString}`,
   `Passengers: ${adultPassengerCount}`,
   `Interval: ${pretty(interval * TIME_MIN)}`,
-  `Deal price: \$${dealPriceThreshold || "disabled"}`,
+  `Deal price: ${dealPriceThreshold ? `>= \$${dealPriceThreshold}` : "disabled"}`,
   `SMS alerts: ${process.env.TWILIO_PHONE_TO || "disabled"}`
 ])
 
