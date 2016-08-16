@@ -102,17 +102,20 @@ const sendTextMessage = (message) => {
 class Dashboard {
 
   constructor() {
+    this.widgets = {}
 
     // Configure blessed
     this.screen = blessed.screen({
       title: "Southwest Price Watch",
+      autoPadding: true,
       dockBorders: true,
       fullUnicode: true,
-      // autoPadding: true
+      smartCSR: true
     })
 
     this.screen.key(["escape", "q", "C-c"], (ch, key) => process.exit(0))
 
+    // Grid settings
     this.grid = new contrib.grid({
       screen: this.screen,
       rows: 12,
@@ -155,7 +158,6 @@ class Dashboard {
     }
 
     // Widgets
-    this.widgets = {}
     const widgets = {
       map: {
         type: contrib.map,
