@@ -336,28 +336,28 @@ const fetch = () => {
     .get("https://www.southwest.com")
     .submit(".booking-form--form", {
       twoWayTrip: true,
-      originAirport: originAirport,
-      destinationAirport: destinationAirport,
       airTranRedirect: "",
       returnAirport: "RoundTrip",
-      outboundDateString: outboundDateString,
       outboundTimeOfDay: "ANYTIME",
-      returnDateString: returnDateString,
       returnTimeOfDay: "ANYTIME",
-      adultPassengerCount: adultPassengerCount,
       seniorPassengerCount: 0,
       fareType: "DOLLARS",
+      originAirport,
+      destinationAirport,
+      outboundDateString,
+      returnDateString,
+      adultPassengerCount
     })
     .find("#faresOutbound .product_price")
     .then((priceMarkup) => {
-      let matches = priceMarkup.toString().match(/\$.*?(\d+)/)
-      let price = parseInt(matches[1])
+      const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
+      const price = parseInt(matches[1])
       fares.outbound.push(price)
     })
     .find("#faresReturn .product_price")
     .then((priceMarkup) => {
-      let matches = priceMarkup.toString().match(/\$.*?(\d+)/)
-      let price = parseInt(matches[1])
+      const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
+      const price = parseInt(matches[1])
       fares.return.push(price)
     })
     .done(() => {
