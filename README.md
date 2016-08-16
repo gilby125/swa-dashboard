@@ -2,7 +2,7 @@
 Dashboard to monitor and receive alerts for changes in Southwest fare prices.
 
 ## Why?
-I'm a lazy programmer. ¯\\\_(ツ)\_/¯
+I'm a lazy programmer and I wanted to try out [blessed](https://github.com/chjj/blessed/). ¯\\\_(ツ)\_/¯
 
 ## Installation
 Since I would rather not get in trouble, you can clone the repo locally and
