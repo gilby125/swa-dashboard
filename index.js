@@ -144,7 +144,7 @@ class Dashboard {
     }
 
     // Shared settings
-    const style = {
+    const shared = {
       border: {
         type: "line"
       },
@@ -162,13 +162,31 @@ class Dashboard {
       map: {
         type: contrib.map,
         size: {
-          width: 12,
+          width: 9,
           height: 5,
           top: 0,
           left: 0
         },
-        options: Object.assign({}, style, {
-          label: "Map"
+        options: Object.assign({}, shared, {
+          label: "Map",
+          startLon: 54,
+          endLon: 110,
+          startLat: 112,
+          endLat: 140,
+          region: "us"
+        })
+      },
+      settings: {
+        type: contrib.log,
+        size: {
+          width: 3,
+          height: 5,
+          top: 0,
+          left: 9
+        },
+        options: Object.assign({}, shared, {
+          label: "Settings",
+          padding: 1
         })
       },
       graph: {
@@ -179,7 +197,7 @@ class Dashboard {
           top: 5,
           left: 0
         },
-        options: Object.assign({}, style, {
+        options: Object.assign({}, shared, {
           label: "Prices",
           showLegend: true,
           legend: {
@@ -190,26 +208,13 @@ class Dashboard {
       log: {
         type: contrib.log,
         size: {
-          width: 9,
+          width: 12,
           height: 3,
           top: 9,
           left: 0
         },
-        options: Object.assign({}, style, {
+        options: Object.assign({}, shared, {
           label: "Log",
-          padding: 1
-        })
-      },
-      settings: {
-        type: contrib.log,
-        size: {
-          width: 3,
-          height: 3,
-          top: 9,
-          left: 9
-        },
-        options: Object.assign({}, style, {
-          label: "Settings",
           padding: 1
         })
       }
