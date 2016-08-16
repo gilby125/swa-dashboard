@@ -6,14 +6,11 @@
   "bin": {
     "swa": "index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "false"
+    "url": "https://github.com/ezekg/swa-dashboard"
   },
-  "author": "",
+  "author": "Zeke Gabrielse",
   "license": "MIT",
   "dependencies": {
     "airports": "^1.0.0",
