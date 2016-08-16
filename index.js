@@ -146,13 +146,13 @@ class Dashboard {
     const style = {
       padding: 1,
       border: {
-        type: "line",
+        type: "line"
       },
       style: {
         fg: "white",
-        text: "white",
+        text: "green",
         border: {
-          fg: "green",
+          fg: "green"
         }
       }
     }
@@ -165,7 +165,7 @@ class Dashboard {
           width: 12,
           height: 5,
           top: 0,
-          left: 0,
+          left: 0
         },
         options: Object.assign({}, style, {
           label: "Map"
@@ -177,7 +177,7 @@ class Dashboard {
           width: 12,
           height: 4,
           top: 5,
-          left: 0,
+          left: 0
         },
         options: Object.assign({}, style, {
           label: "Prices",
@@ -193,7 +193,7 @@ class Dashboard {
           width: 9,
           height: 3,
           top: 9,
-          left: 0,
+          left: 0
         },
         options: Object.assign({}, style, {
           label: "Log"
