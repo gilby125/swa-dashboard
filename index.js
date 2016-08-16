@@ -106,7 +106,7 @@ class Dashboard {
 
     // Configure blessed
     this.screen = blessed.screen({
-      title: "Southwest Price Watch",
+      title: "SWA Dashboard",
       autoPadding: true,
       dockBorders: true,
       fullUnicode: true,

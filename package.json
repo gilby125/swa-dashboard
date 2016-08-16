@@ -1,7 +1,7 @@
 {
-  "name": "swa-scraper",
+  "name": "swa-dashboard",
   "version": "1.0.0",
-  "description": "Command line price scraper for Southwest flights",
+  "description": "Dashboard to monitor and receive alerts for changes in Southwest fare prices",
   "main": "index.js",
   "bin": {
     "swa": "index.js"

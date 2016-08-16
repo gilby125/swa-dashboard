@@ -1,4 +1,7 @@
-# SWA Scraper
+# SWA Dashboard
+Dashboard to monitor and receive alerts for changes in Southwest fare prices.
+
+## Why?
 I'm a lazy programmer. ¯\\\_(ツ)\_/¯
 
 ## Installation
