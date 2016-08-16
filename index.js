@@ -68,35 +68,6 @@ const isTwilioConfigured = process.env.TWILIO_ACCOUNT_SID &&
                            process.env.TWILIO_PHONE_TO
 
 /**
- * Send a text message using Twilio
- *
- * @param {Str} message
- *
- * @return {Void}
- */
-const sendTextMessage = (message) => {
-  try {
-    const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-
-    twilioClient.sendMessage({
-      from: process.env.TWILIO_PHONE_FROM,
-      to: process.env.TWILIO_PHONE_TO,
-      body: message
-    }, function(err, data) {
-      if (err) {
-        console.log(
-          chalk.red(`Error: failed to send SMS to ${process.env.TWILIO_PHONE_TO} from ${process.env.TWILIO_PHONE_FROM}`)
-        )
-      } else {
-        console.log(
-          chalk.green(`Successfully sent SMS to ${process.env.TWILIO_PHONE_TO} from ${process.env.TWILIO_PHONE_FROM}`)
-        )
-      }
-    })
-  } catch(e) {}
-}
-
-/**
  * Dashboard renderer
  */
 class Dashboard {
@@ -149,8 +120,8 @@ class Dashboard {
         type: "line"
       },
       style: {
-        fg: "white",
-        text: "green",
+        fg: "blue",
+        text: "blue",
         border: {
           fg: "green"
         }
@@ -186,7 +157,9 @@ class Dashboard {
         },
         options: Object.assign({}, shared, {
           label: "Settings",
-          padding: 1
+          padding: {
+            left: 1
+          }
         })
       },
       graph: {
@@ -215,7 +188,9 @@ class Dashboard {
         },
         options: Object.assign({}, shared, {
           label: "Log",
-          padding: 1
+          padding: {
+            left: 1
+          }
         })
       }
     }
@@ -303,7 +278,8 @@ class Dashboard {
    * @return {Void}
    */
   log(messages) {
-    messages.forEach((m) => this.widgets.log.add(m))
+    const now = format("MM/dd/yy-hh:mm:ss", new Date())
+    messages.forEach((m) => this.widgets.log.log(`${now}: ${m}`))
   }
 
   /**
@@ -319,6 +295,36 @@ class Dashboard {
 }
 
 const dashboard = new Dashboard()
+
+/**
+ * Send a text message using Twilio
+ *
+ * @param {Str} message
+ *
+ * @return {Void}
+ */
+const sendTextMessage = (message) => {
+  try {
+    const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+
+    twilioClient.sendMessage({
+      from: process.env.TWILIO_PHONE_FROM,
+      to: process.env.TWILIO_PHONE_TO,
+      body: message
+    }, function(err, data) {
+      if (!dashboard) return
+      if (err) {
+        dashboard.log([
+          chalk.red(`Error: failed to send SMS to ${process.env.TWILIO_PHONE_TO} from ${process.env.TWILIO_PHONE_FROM}`)
+        ])
+      } else {
+        dashboard.log([
+          chalk.green(`Successfully sent SMS to ${process.env.TWILIO_PHONE_TO} from ${process.env.TWILIO_PHONE_FROM}`)
+        ])
+      }
+    })
+  } catch(e) {}
+}
 
 /**
  * Fetch latest Southwest prices
@@ -402,7 +408,7 @@ const fetch = () => {
 
         // Do some Twilio magic (SMS alerts for awesome deals)
         if (dealPriceThreshold && (lowestOutboundFare <= dealPriceThreshold || lowestReturnFare <= dealPriceThreshold)) {
-          const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return).`
+          const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return)`
 
           // Party time
           dashboard.log([
@@ -414,10 +420,9 @@ const fetch = () => {
           }
         }
 
-        const now = format("MM/dd/yy-hh:mm:ss", new Date())
         dashboard.log([
-          `${now}: lowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
-          `${now}: lowest fair for a return flight is currently \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
+          `Lowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
+          `Lowest fair for a return flight is currently \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
         ])
 
         dashboard.plot({
@@ -432,7 +437,7 @@ const fetch = () => {
     })
 }
 
-// Get lat/lon for airports
+// Get lat/lon for airports (no validation on non-existent airports)
 airports.forEach((airport) => {
   switch (airport.iata) {
     case originAirport:
@@ -452,7 +457,7 @@ dashboard.settings([
   `Return date: ${returnDateString}`,
   `Passengers: ${adultPassengerCount}`,
   `Interval: ${pretty(interval * TIME_MIN)}`,
-  `Deal price: ${dealPriceThreshold ? `>= \$${dealPriceThreshold}` : "disabled"}`,
+  `Deal price: ${dealPriceThreshold ? `<= \$${dealPriceThreshold}` : "disabled"}`,
   `SMS alerts: ${process.env.TWILIO_PHONE_TO || "disabled"}`
 ])
 
