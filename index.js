@@ -458,7 +458,7 @@ dashboard.settings([
   `Passengers: ${adultPassengerCount}`,
   `Interval: ${pretty(interval * TIME_MIN)}`,
   `Deal price: ${dealPriceThreshold ? `<= \$${dealPriceThreshold}` : "disabled"}`,
-  `SMS alerts: ${process.env.TWILIO_PHONE_TO || "disabled"}`
+  `SMS alerts: ${isTwilioConfigured ? process.env.TWILIO_PHONE_TO : "disabled"}`
 ])
 
 fetch()
