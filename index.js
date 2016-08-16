@@ -145,7 +145,6 @@ class Dashboard {
 
     // Shared settings
     const style = {
-      padding: 1,
       border: {
         type: "line"
       },
@@ -197,7 +196,8 @@ class Dashboard {
           left: 0
         },
         options: Object.assign({}, style, {
-          label: "Log"
+          label: "Log",
+          padding: 1
         })
       },
       settings: {
@@ -209,7 +209,8 @@ class Dashboard {
           left: 9
         },
         options: Object.assign({}, style, {
-          label: "Settings"
+          label: "Settings",
+          padding: 1
         })
       }
     }
@@ -248,13 +249,11 @@ class Dashboard {
     const now = format("hh:mm:ss", new Date())
 
     Object.assign(this.graphs.outbound, {
-      // title: `Outbound (\$${prices.outbound})`,
       x: [...this.graphs.outbound.x, now],
       y: [...this.graphs.outbound.y, prices.outbound]
     })
 
     Object.assign(this.graphs.return, {
-      // title: `Return (\$${prices.return})`,
       x: [...this.graphs.return.x, now],
       y: [...this.graphs.return.y, prices.return]
     })
