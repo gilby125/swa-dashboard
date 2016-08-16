@@ -7,8 +7,8 @@ Dashboard to monitor and receive alerts for changes in Southwest fare prices.
 I'm a lazy programmer and I wanted to try out [blessed](https://github.com/chjj/blessed/). ¯\\\_(ツ)\_/¯
 
 ## Installation
-Since I would rather not get in trouble, you can clone the repo locally and
-use `npm link` to use the executable.
+Since I would rather not get in trouble for publishing this tool to npm, you can
+clone the repo locally and use `npm link` to use the executable.
 ```
 cd wherever-you-cloned-it-to
 npm link
