@@ -5,6 +5,11 @@ const osmosis = require("osmosis")
 const chalk = require("chalk")
 const rainbow = require("chalk-rainbow")
 const twilio = require("twilio")
+const blessed = require("blessed")
+const contrib = require("blessed-contrib")
+const format = require("date-format")
+const pretty = require("pretty-ms")
+const airports = require("airports")
 
 // Time constants
 const TIME_MS = 1
@@ -51,7 +56,7 @@ process.argv.forEach((arg, i, argv) => {
       dealPriceThreshold = parseInt(argv[i + 1])
       break
     case "--interval":
-      interval = parseInt(argv[i + 1])
+      interval = parseFloat(argv[i + 1])
       break
   }
 })
@@ -92,6 +97,204 @@ const sendTextMessage = (message) => {
 }
 
 /**
+ * Dashboard renderer
+ */
+class Dashboard {
+
+  constructor() {
+
+    // Configure blessed
+    this.screen = blessed.screen({
+      title: "Southwest Price Watch",
+      dockBorders: true,
+      fullUnicode: true,
+      // autoPadding: true
+    })
+
+    this.screen.key(["escape", "q", "C-c"], (ch, key) => process.exit(0))
+
+    this.grid = new contrib.grid({
+      screen: this.screen,
+      rows: 12,
+      cols: 12
+    })
+
+    // Graphs
+    this.graphs = {
+      outbound: {
+        title: "Outbound",
+        x: [],
+        y: [],
+        style: {
+          line: "red"
+        }
+      },
+      return: {
+        title: "Return",
+        x: [],
+        y: [],
+        style: {
+          line: "yellow"
+        }
+      }
+    }
+
+    // Shared settings
+    const style = {
+      padding: 1,
+      border: {
+        type: "line",
+      },
+      style: {
+        fg: "white",
+        text: "white",
+        border: {
+          fg: "green",
+        }
+      }
+    }
+
+    // Widgets
+    this.widgets = {}
+    const widgets = {
+      map: {
+        type: contrib.map,
+        size: {
+          width: 12,
+          height: 5,
+          top: 0,
+          left: 0,
+        },
+        options: Object.assign({}, style, {
+          label: "Map"
+        })
+      },
+      graph: {
+        type: contrib.line,
+        size: {
+          width: 12,
+          height: 4,
+          top: 5,
+          left: 0,
+        },
+        options: Object.assign({}, style, {
+          label: "Prices",
+          showLegend: true,
+          legend: {
+            width: 20
+          }
+        })
+      },
+      log: {
+        type: contrib.log,
+        size: {
+          width: 9,
+          height: 3,
+          top: 9,
+          left: 0,
+        },
+        options: Object.assign({}, style, {
+          label: "Log"
+        })
+      },
+      settings: {
+        type: contrib.log,
+        size: {
+          width: 3,
+          height: 3,
+          top: 9,
+          left: 9
+        },
+        options: Object.assign({}, style, {
+          label: "Settings"
+        })
+      }
+    }
+
+    for (let name in widgets) {
+      let widget = widgets[name]
+
+      this.widgets[name] = this.grid.set(
+        widget.size.top,
+        widget.size.left,
+        widget.size.height,
+        widget.size.width,
+        widget.type,
+        widget.options
+      )
+    }
+  }
+
+  /**
+   * Render screen
+   *
+   * @return {Void}
+   */
+  render() {
+    this.screen.render()
+  }
+
+  /**
+   * Plot graph data
+   *
+   * @param {Arr} prices
+   *
+   * @return {Void}
+   */
+  plot(prices) {
+    const now = format("hh:mm:ss", new Date())
+
+    Object.assign(this.graphs.outbound, {
+      // title: `Outbound (\$${prices.outbound})`,
+      x: [...this.graphs.outbound.x, now],
+      y: [...this.graphs.outbound.y, prices.outbound]
+    })
+
+    Object.assign(this.graphs.return, {
+      // title: `Return (\$${prices.return})`,
+      x: [...this.graphs.return.x, now],
+      y: [...this.graphs.return.y, prices.return]
+    })
+
+    this.widgets.graph.setData([
+      this.graphs.outbound,
+      this.graphs.return
+    ])
+  }
+
+  /**
+   * Add waypoint marker to map
+   */
+  waypoint(data) {
+    this.widgets.map.addMarker(data)
+  }
+
+  /**
+   * Log data
+   *
+   * @param {Arr} messages
+   *
+   * @return {Void}
+   */
+  log(messages) {
+    messages.forEach((m) => this.widgets.log.add(m))
+  }
+
+  /**
+   * Display settings
+   *
+   * @param {Arr} config
+   *
+   * @return {Void}
+   */
+  settings(config) {
+    config.forEach((c) => this.widgets.settings.add(c))
+  }
+}
+
+const dashboard = new Dashboard()
+
+/**
  * Fetch latest Southwest prices
  *
  * @return {Void}
@@ -128,7 +331,7 @@ const fetch = () => {
     .done(() => {
       const lowestOutboundFare = Math.min(...fares.outbound)
       const lowestReturnFare = Math.min(...fares.return)
-      var shouldPrintFares = true
+      var faresAreValid = true
 
       // Clear previous fares
       fares.outbound = []
@@ -145,7 +348,7 @@ const fetch = () => {
 
         // Usually this is because of a scraping error
         if (!isFinite(outboundFareDiff) || !isFinite(returnFareDiff)) {
-          shouldPrintFares = false
+          faresAreValid = false
         }
 
         if (outboundFareDiff > 0) {
@@ -165,7 +368,7 @@ const fetch = () => {
         }
       }
 
-      if (shouldPrintFares) {
+      if (faresAreValid) {
 
         // Store current fares for next time
         prevLowestOutboundFare = lowestOutboundFare
@@ -176,30 +379,57 @@ const fetch = () => {
           const message = `Deal alert! Lowest fair has hit \$${lowestOutboundFare} (outbound) and \$${lowestReturnFare} (return).`
 
           // Party time
-          console.log(rainbow(`\n${message}`))
+          dashboard.log([
+            rainbow(message)
+          ])
 
           if (isTwilioConfigured) {
             sendTextMessage(message)
           }
         }
 
-        console.log(
-          `\nLowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")},\nwhile the cheapest return flight is \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}.`
-        )
+        const now = format("MM/dd/yy-hh:mm:ss", new Date())
+        dashboard.log([
+          `${now}: lowest fair for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
+          `${now}: lowest fair for a return flight is currently \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
+        ])
+
+        dashboard.plot({
+          outbound: lowestOutboundFare,
+          return: lowestReturnFare
+        })
       }
+
+      dashboard.render()
 
       setTimeout(fetch, interval * TIME_MIN)
     })
 }
 
-console.log(chalk.green("Starting…"))
-
-if (dealPriceThreshold) {
-  console.log(chalk.yellow(`Watching for deals lower than \$${dealPriceThreshold}!`))
-
-  if (isTwilioConfigured) {
-    console.log(chalk.yellow(`SMS deal alerts are enabled for ${process.env.TWILIO_PHONE_TO}!`))
+// Get lat/lon for airports
+airports.forEach((airport) => {
+  switch (airport.iata) {
+    case originAirport:
+      dashboard.waypoint({ lat: airport.lat, lon: airport.lon, color: "red", char: "X" })
+      break
+    case destinationAirport:
+      dashboard.waypoint({ lat: airport.lat, lon: airport.lon, color: "yellow", char: "X" })
+      break
+    default:
+      break
   }
-}
+})
+
+// Print settings
+dashboard.settings([
+  `Origin airport: ${originAirport}`,
+  `Destination airport: ${destinationAirport}`,
+  `Outbound date: ${outboundDateString}`,
+  `Return date: ${returnDateString}`,
+  `Passengers: ${adultPassengerCount}`,
+  `Interval: ${pretty(interval * TIME_MIN)}`,
+  `Deal price: \$${dealPriceThreshold || "disabled"}`,
+  `SMS alerts: ${process.env.TWILIO_PHONE_TO || "disabled"}`
+])
 
 fetch()
