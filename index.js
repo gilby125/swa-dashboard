@@ -417,8 +417,6 @@ airports.forEach((airport) => {
     case destinationAirport:
       dashboard.waypoint({ lat: airport.lat, lon: airport.lon, color: "yellow", char: "X" })
       break
-    default:
-      break
   }
 })
 
