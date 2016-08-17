@@ -97,7 +97,7 @@ class Dashboard {
     // Graphs
     this.graphs = {
       outbound: {
-        title: "Outbound",
+        title: "Origin/Outbound",
         x: [],
         y: [],
         style: {
@@ -105,7 +105,7 @@ class Dashboard {
         }
       },
       return: {
-        title: "Return",
+        title: "Destination/Return",
         x: [],
         y: [],
         style: {
