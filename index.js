@@ -246,6 +246,10 @@ class Dashboard {
 
   /**
    * Add waypoint marker to map
+   *
+   * @param {Obj} data
+   *
+   * @return {Void}
    */
   waypoint(data) {
     this.markers.push(data)
