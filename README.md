@@ -4,7 +4,8 @@ Dashboard to monitor and receive alerts for changes in Southwest fare prices.
 ![image](https://cloud.githubusercontent.com/assets/6979737/17740385/08603f62-645e-11e6-9abf-df4851a95f29.png)
 
 ## Why?
-I'm a lazy programmer and I wanted to try out [blessed](https://github.com/chjj/blessed/). ¯\\\_(ツ)\_/¯
+I'm a lazy programmer who was tired of checking flight prices … and I really wanted
+to try out Twilio and [blessed](https://github.com/chjj/blessed/). ¯\\\_(ツ)\_/¯
 
 ## Installation
 Since I would rather not get in trouble for publishing this tool to npm, you can
@@ -21,7 +22,7 @@ difference in price since the last interval. The default interval is 30 mins.
 
 You may optionally set a `--deal-price-threshold` flag, which will alert you if
 the prices fall below the threshold you define. Other than `--interval`, all
-other flags are required. _I'm lazy, so there is no validation._
+other flags are required. _Currently, there is no validation._
 
 ```bash
 swa \
