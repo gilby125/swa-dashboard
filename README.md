@@ -1,7 +1,7 @@
 # SWA Dashboard
 Dashboard to monitor and receive alerts for changes in Southwest fare prices.
 
-![image](https://cloud.githubusercontent.com/assets/6979737/17717938/b203afbe-63d6-11e6-8439-4f412ea6818d.png)
+![image](https://cloud.githubusercontent.com/assets/6979737/17740385/08603f62-645e-11e6-9abf-df4851a95f29.png)
 
 ## Why?
 I'm a lazy programmer and I wanted to try out [blessed](https://github.com/chjj/blessed/). ¯\\\_(ツ)\_/¯
